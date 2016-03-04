@@ -4,7 +4,7 @@ class CreateBlogPosts < ActiveRecord::Migration
       t.string :title
       t.text :description
       t.string :author
-      t.float :rating
+      t.float :avgrating
       t.references :user, index: true, foreign_key: true
 
       t.timestamps null: false

@@ -1,15 +1,20 @@
 class BlogPostsController < ApplicationController
   before_action :set_blog_post, only: [:show, :edit, :update, :destroy]
+  skip_before_action :ensure_login, only: [:index]
 
   # GET /blog_posts
   # GET /blog_posts.json
   def index
-    @blog_posts = BlogPost.all.order(rating: :desc)
+    @blog_posts = BlogPost.all.order(avgrating: :desc)
   end
 
   # GET /blog_posts/1
   # GET /blog_posts/1.json
   def show
+    @rating = Rating.find_by(blog_post_id: @blog_post.id, user_id: @blog_post.user_id)
+    if (@rating.nil?)
+      @rating = Rating.new
+    end
   end
 
   # GET /blog_posts/new
@@ -69,6 +74,6 @@ class BlogPostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def blog_post_params
-      params.require(:blog_post).permit(:title, :description, :author)
+      params.require(:blog_post).permit(:title, :description, :author, :user_id)
     end
 end
