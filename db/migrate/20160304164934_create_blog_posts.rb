@@ -5,6 +5,7 @@ class CreateBlogPosts < ActiveRecord::Migration
       t.text :description
       t.string :author
       t.float :rating
+      t.references :user, index: true, foreign_key: true
 
       t.timestamps null: false
     end
