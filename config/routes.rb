@@ -3,13 +3,20 @@ Rails.application.routes.draw do
   root to: "blog_posts#index"
 
   get "/login" => "sessions#new", as: "login"
-  # delete "/logout" => "sessions#destroy", as: "logout"
   get "/logout" => "sessions#destroy", as: "logout"
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :users, only: [:new, :create]
   resources :blog_posts do
     resources :ratings, only: [:new, :create]
+  end
+
+  #API v1
+  namespace :api do
+    namespace :v1 do
+      resources :users, only: [:index, :create, :show, :update, :destroy]
+      resources :blog_posts, only: [:index, :create, :show, :update, :destroy]
+    end
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
