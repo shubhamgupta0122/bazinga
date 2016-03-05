@@ -3,6 +3,7 @@ class SessionsController < ApplicationController
 	skip_before_action :ensure_login, only: [:new, :create]
 
   def new
+    session[:return_to] ||= root_path
   end
 
   def create
@@ -11,7 +12,7 @@ class SessionsController < ApplicationController
 
   	if user && user.authenticate(password)
   		session[:user_id] = user.id
-  		redirect_to root_path, notice: "Logged in successfully"
+  		redirect_to session[:return_to], notice: "Logged in successfully"
   	else
   		redirect_to login_path, alert: "Invalid username/password combination"
   	end

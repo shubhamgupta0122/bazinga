@@ -1,6 +1,7 @@
 class BlogPostsController < ApplicationController
   before_action :set_blog_post, only: [:show, :edit, :update, :destroy]
-  skip_before_action :ensure_login, only: [:index]
+  before_action :blog_owner?, only: [:edit, :update, :destroy]
+  skip_before_action :ensure_login, only: [:index, :show]
 
   # GET /blog_posts
   # GET /blog_posts.json
@@ -11,7 +12,7 @@ class BlogPostsController < ApplicationController
   # GET /blog_posts/1
   # GET /blog_posts/1.json
   def show
-    @rating = Rating.find_by(blog_post_id: @blog_post.id, user_id: @blog_post.user_id)
+    @rating = Rating.find_by(blog_post_id: @blog_post.id, user_id: current_user.id) if logged_in?
     if (@rating.nil?)
       @rating = Rating.new
     end
@@ -75,5 +76,11 @@ class BlogPostsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def blog_post_params
       params.require(:blog_post).permit(:title, :description, :author, :user_id)
+    end
+
+    def blog_owner?
+      unless (@blog_post.user_id == current_user.id)
+        redirect_to @blog_post, alert: 'You can only edit/delete posts that you have created'
+      end
     end
 end

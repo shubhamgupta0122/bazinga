@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   protected
   def ensure_login
+    session[:return_to] ||= request.original_url
   	unless session[:user_id]
   		redirect_to login_path, alert: "You need to login first"
   	end
@@ -18,6 +19,11 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-  	@current_user ||= User.find(session[:user_id])
+    id = logged_in?
+    if id
+      @current_user ||= User.find(session[:user_id])
+    else
+      @current_user = nil
+    end
   end
 end

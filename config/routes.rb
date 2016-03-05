@@ -3,16 +3,15 @@ Rails.application.routes.draw do
   root to: "blog_posts#index"
 
   get "/login" => "sessions#new", as: "login"
-  delete "/logout" => "sessions#destroy", as: "logout"
-
-  # get "/rating/new" => "ratings#new", as: "new_rating"
-  # post "rating/:id" => "ratings#create", as: "ratings"
+  # delete "/logout" => "sessions#destroy", as: "logout"
+  get "/logout" => "sessions#destroy", as: "logout"
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :users, only: [:new, :create]
   resources :blog_posts do
     resources :ratings, only: [:new, :create]
   end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
